@@ -215,6 +215,7 @@ SEXP savvy_PlRExpr_list_diff__ffi(SEXP self__, SEXP c_arg__n, SEXP c_arg__null_b
 SEXP savvy_PlRExpr_list_shift__ffi(SEXP self__, SEXP c_arg__periods);
 SEXP savvy_PlRExpr_list_slice__ffi(SEXP self__, SEXP c_arg__offset, SEXP c_arg__length);
 SEXP savvy_PlRExpr_list_eval__ffi(SEXP self__, SEXP c_arg__expr, SEXP c_arg__parallel);
+SEXP savvy_PlRExpr_list_to_struct_fixed_width__ffi(SEXP self__, SEXP c_arg__names);
 SEXP savvy_PlRExpr_list_all__ffi(SEXP self__);
 SEXP savvy_PlRExpr_list_any__ffi(SEXP self__);
 SEXP savvy_PlRExpr_list_set_operation__ffi(SEXP self__, SEXP c_arg__other, SEXP c_arg__operation);

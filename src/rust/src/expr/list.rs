@@ -1,6 +1,6 @@
 use crate::{prelude::*, PlRExpr};
 use polars::{prelude::SetOperation, series::ops::NullBehavior};
-use savvy::{savvy, NumericScalar, Result};
+use savvy::{savvy, FunctionSexp, NumericScalar, Result, StringSexp};
 
 #[savvy]
 impl PlRExpr {
@@ -146,31 +146,50 @@ impl PlRExpr {
             .into())
     }
 
+    fn list_to_struct_fixed_width(&self, names: StringSexp) -> Result<Self> {
+        let names = names
+            .to_vec()
+            .iter()
+            .map(|x| (*x).into())
+            .collect::<Arc<[PlSmallStr]>>();
+        Ok(self
+            .inner
+            .clone()
+            .list()
+            .to_struct(ListToStructArgs::FixedWidth(names))
+            .into())
+    }
+
     // fn list_to_struct(
     //     &self,
-    //     n_field_strategy: &str,
-    //     fields: Robj,
-    //     upper_bound: Robj,
+    //     width_strat: &str,
+    //     name_gen: FunctionSexp,
+    //     upper_bound: NumericScalar,
     // ) -> Result<Self> {
-    //     let n_field_strategy = <Wrap<ListToStructWidthStrategy>>::try_from(n_field_strategy)?.0;
-    //     let fields = robj_to!(Option, Robj, fields)?.map(|robj| {
-    //         let par_fn: ParRObj = robj.into();
-    //         let f: Arc<(dyn Fn(usize) -> pl::PlSmallStr + Send + Sync + 'static)> =
-    //             pl::Arc::new(move |idx: usize| {
-    //                 let thread_com = ThreadCom::from_global(&CONFIG);
-    //                 thread_com.send(RFnSignature::FnF64ToString(par_fn.clone(), idx as f64));
-    //                 let s = thread_com.recv().unwrap_string();
-    //                 let s: pl::PlSmallStr = s.into();
-    //                 s
-    //             });
-    //         f
-    //     });
-    //     let ub = robj_to!(usize, upper_bound)?;
-    //     Ok(RPolarsExpr(self.inner.clone().list().to_struct(
-    //         n_field_strategy,
-    //         fields,
-    //         ub,
-    //     )))
+    //     let width_strat = <Wrap<ListToStructWidthStrategy>>::try_from(width_strat)?.0;
+    //     // let name_gen = robj_to!(Option, Robj, name_gen)?.map(|robj| {
+    //     //     let par_fn: ParRObj = robj.into();
+    //     //     let f: Arc<(dyn Fn(usize) -> PlSmallStr + Send + Sync + 'static)> =
+    //     //         Arc::new(move |idx: usize| {
+    //     //             let thread_com = ThreadCom::from_global(&CONFIG);
+    //     //             thread_com.send(RFnSignature::FnF64ToString(par_fn.clone(), idx as f64));
+    //     //             let s = thread_com.recv().unwrap_string();
+    //     //             let s: PlSmallStr = s.into();
+    //     //             s
+    //     //         });
+    //     //     f
+    //     // });
+    //     let upper_bound = <Wrap<usize>>::try_from(upper_bound)?.0;
+    //     let out = self
+    //         .inner
+    //         .clone()
+    //         .list()
+    //         .to_struct(ListToStructArgs::InferWidth {
+    //             infer_field_strategy: width_strat,
+    //             get_index_name: name_gen,
+    //             max_fields: upper_bound,
+    //         });
+    //     Ok(out.into())
     // }
 
     fn list_all(&self) -> Result<Self> {

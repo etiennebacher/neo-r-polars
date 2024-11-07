@@ -1445,6 +1445,12 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   }
 }
 
+`PlRExpr_list_to_struct_fixed_width` <- function(self) {
+  function(`names`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_to_struct_fixed_width__impl, `self`, `names`))
+  }
+}
+
 `PlRExpr_list_all` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_all__impl, `self`))
@@ -2095,6 +2101,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   e$`list_shift` <- `PlRExpr_list_shift`(ptr)
   e$`list_slice` <- `PlRExpr_list_slice`(ptr)
   e$`list_eval` <- `PlRExpr_list_eval`(ptr)
+  e$`list_to_struct_fixed_width` <- `PlRExpr_list_to_struct_fixed_width`(ptr)
   e$`list_all` <- `PlRExpr_list_all`(ptr)
   e$`list_any` <- `PlRExpr_list_any`(ptr)
   e$`list_set_operation` <- `PlRExpr_list_set_operation`(ptr)

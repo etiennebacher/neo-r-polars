@@ -1069,6 +1069,11 @@ SEXP savvy_PlRExpr_list_eval__impl(SEXP self__, SEXP c_arg__expr, SEXP c_arg__pa
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_list_to_struct_fixed_width__impl(SEXP self__, SEXP c_arg__names) {
+    SEXP res = savvy_PlRExpr_list_to_struct_fixed_width__ffi(self__, c_arg__names);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_list_all__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_list_all__ffi(self__);
     return handle_result(res);
@@ -1953,6 +1958,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_list_shift__impl", (DL_FUNC) &savvy_PlRExpr_list_shift__impl, 2},
     {"savvy_PlRExpr_list_slice__impl", (DL_FUNC) &savvy_PlRExpr_list_slice__impl, 3},
     {"savvy_PlRExpr_list_eval__impl", (DL_FUNC) &savvy_PlRExpr_list_eval__impl, 3},
+    {"savvy_PlRExpr_list_to_struct_fixed_width__impl", (DL_FUNC) &savvy_PlRExpr_list_to_struct_fixed_width__impl, 2},
     {"savvy_PlRExpr_list_all__impl", (DL_FUNC) &savvy_PlRExpr_list_all__impl, 1},
     {"savvy_PlRExpr_list_any__impl", (DL_FUNC) &savvy_PlRExpr_list_any__impl, 1},
     {"savvy_PlRExpr_list_set_operation__impl", (DL_FUNC) &savvy_PlRExpr_list_set_operation__impl, 3},
