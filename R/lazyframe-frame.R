@@ -2443,4 +2443,66 @@ lazyframe__sink_parquet <- function(
   })
 }
 
+#' Evaluate the query in streaming mode and write to an IPC file
+#'
+#' @inherit lazyframe__sink_parquet description params return
+#' @inheritParams rlang::args_dots_empty
+#' @param compression `NULL` or one of:
+#' * `"uncompressed"`: same as `NULL`.
+#' * `"lz4"`: fast compression/decompression.
+#' * `"zstd"`: good compression performance.
+#'
+#' @examples
+#' # sink table 'mtcars' from mem to ipc
+#' tmpf <- tempfile()
+#' as_polars_lf(mtcars)$sink_ipc(tmpf)
+# stream a query end-to-end (not supported yet, https://github.com/pola-rs/polars/issues/1040)
+# tmpf2 = tempfile()
+# pl$scan_ipc(tmpf)$select(pl$col("cyl") * 2)$sink_ipc(tmpf2)
+# load ipc directly into a DataFrame / memory
+# pl$scan_ipc(tmpf2)$collect()
+lazyframe__sink_ipc <- function(
+    path,
+    ...,
+    compression = c("zstd", "lz4"),
+    maintain_order = TRUE,
+    type_coercion = TRUE,
+    `_type_check` = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    collapse_joins = TRUE,
+    no_optimization = FALSE,
+    storage_options = NULL,
+    retries = 2) {
+  wrap({
+    check_dots_empty0(...)
+    compression <- arg_match0(
+      compression,
+      values = c("lz4", "zstd")
+    )
+    lf <- self$set_sink_optimizations(
+      type_coercion = type_coercion,
+      `_type_check` = `_type_check`,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      collapse_joins = collapse_joins,
+      no_optimization = no_optimization
+    )
+
+    lf$sink_ipc(
+      path = path,
+      compression = compression,
+      maintain_order = maintain_order,
+      storage_options = storage_options,
+      retries = retries
+    )
+
+    invisible(self)
+  })
+}
+
 # TODO-REWRITE: implement $deserialize() for LazyFrame
