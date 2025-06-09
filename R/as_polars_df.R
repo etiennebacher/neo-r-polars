@@ -175,9 +175,22 @@ as_polars_df.list <- function(x, ...) {
   .args <- list2(...)
   # Should not pass the `name` argument
   .args$name <- NULL
-  lapply(x, \(column) eval(call2("as_polars_series", column, !!!.args))$`_s`) |>
-    PlRDataFrame$init() |>
-    wrap()
+  call <- caller_env()
+  tryCatch(
+    {
+      lapply(x, \(column) eval(call2("as_polars_series", column, !!!.args))$`_s`) |>
+        PlRDataFrame$init() |>
+        wrap()
+    },
+    error = function(e) {
+      browser()
+      msg <- e$parent$message
+      if (grepl("lengths don't match", msg)) {
+        msg <- c(msg, "i" = "Use `pl$select()` to recycle inputs.")
+      }
+      abort(msg, call = call)
+    }
+  )
 }
 
 #' @rdname as_polars_df
